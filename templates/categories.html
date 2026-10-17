@@ -1,0 +1,159 @@
+
+{% extends "base.html" %}
+
+{% block title %}Categories | Kharcha Book{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <div class="eyebrow">ORGANIZE</div>
+    <h1 class="h2 fw-bold">Categories</h1>
+    <p class="text-muted">
+        Add, update or delete your spending categories.
+    </p>
+</div>
+
+<div class="row g-3">
+
+    <!-- Add Category -->
+    <div class="col-lg-4">
+        <div class="panel">
+
+            <h3 class="h5 fw-bold">Create category</h3>
+
+            <form method="post" action="{{ url_for('categories') }}">
+
+                <div class="mb-3">
+                    <label class="form-label">Category name</label>
+                    <input
+                        class="form-control"
+                        name="name"
+                        maxlength="40"
+                        placeholder="Enter category name"
+                        required
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" name="kind" required>
+                        <option value="Expense">Expense</option>
+                        <option value="Income">Income</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    + Add category
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Categories List -->
+    <div class="col-lg-8">
+        <div class="panel">
+
+            <h3 class="h5 fw-bold">Your categories</h3>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Category details</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for c in rows %}
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">{{ c.name }}</div>
+                                <span class="text-muted small">
+                                    {{ c.kind }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <form
+                                    method="post"
+                                    action="{{ url_for('update_category', category_id=c.id) }}"
+                                >
+                                    <div class="mb-2">
+                                        <input
+                                            class="form-control form-control-sm"
+                                            name="name"
+                                            value="{{ c.name }}"
+                                            maxlength="40"
+                                            required
+                                        >
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <select
+                                            class="form-select form-select-sm"
+                                            name="kind"
+                                            required
+                                        >
+                                            <option
+                                                value="Expense"
+                                                {{ 'selected' if c.kind == 'Expense' else '' }}
+                                            >
+                                                Expense
+                                            </option>
+                                            <option
+                                                value="Income"
+                                                {{ 'selected' if c.kind == 'Income' else '' }}
+                                            >
+                                                Income
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+                                        Update
+                                    </button>
+                                </form>
+                            </td>
+
+                            <td>
+                                <form
+                                    method="post"
+                                    action="{{ url_for('delete_category', category_id=c.id) }}"
+                                    onsubmit="return confirm('Are you sure you want to delete this category?');"
+                                >
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-outline-danger"
+                                    >
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">
+                                No categories found. Add your first category.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,271 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard | Kharcha Book
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+    <div>
+        <div class="eyebrow">OVERVIEW</div>
+
+        <h1 class="h2 fw-bold mb-1">
+            Your money dashboard
+        </h1>
+
+        <p class="text-muted mb-0">
+            A snapshot of your selected month.
+        </p>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+
+        <form method="get" class="d-flex gap-2">
+
+            <input
+                class="form-control"
+                type="month"
+                name="month"
+                value="{{ month }}"
+            >
+
+            <button class="btn btn-outline-secondary">
+                Apply
+            </button>
+
+        </form>
+
+        <a
+            class="btn btn-primary"
+            href="{{ url_for('add_transaction') }}"
+        >
+            + Add transaction
+        </a>
+
+    </div>
+
+</div>
+
+<div class="row g-3">
+
+    <div class="col-md-4">
+        <div class="metric-card">
+
+            <span>Total income</span>
+
+            <div class="metric-value text-success">
+                {{ income|inr }}
+            </div>
+
+            <small>Selected month</small>
+
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="metric-card">
+
+            <span>Total expenses</span>
+
+            <div class="metric-value text-danger">
+                {{ expense|inr }}
+            </div>
+
+            <small>Selected month</small>
+
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="metric-card">
+
+            <span>Net balance</span>
+
+            <div class="metric-value">
+                {{ balance|inr }}
+            </div>
+
+            <small>Income minus expenses</small>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-3 mt-1">
+
+    <div class="col-lg-7">
+        <div class="panel h-100">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h3 class="h5 fw-bold mb-0">
+                    Recent transactions
+                </h3>
+
+                <a href="{{ url_for('transactions') }}">
+                    View all
+                </a>
+
+            </div>
+
+            {% if recent %}
+
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Details</th>
+                            <th>Type</th>
+                            <th class="text-end">Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for t in recent %}
+                        <tr>
+
+                            <td>
+                                {{ t.transaction_date }}
+                            </td>
+
+                            <td>
+                                <strong>
+                                    {{ t.category_name }}
+                                </strong>
+
+                                <div class="small text-muted">
+                                    {{ t.description }}
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="badge {{ 'text-bg-success' if t.kind == 'Income' else 'text-bg-danger' }}">
+                                    {{ t.kind }}
+                                </span>
+                            </td>
+
+                            <td class="text-end fw-semibold">
+                                {{ t.amount_paise|inr }}
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-state">
+
+                <p class="mb-1">
+                    No transactions yet.
+                </p>
+
+                <a href="{{ url_for('add_transaction') }}">
+                    Add your first transaction
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="panel h-100">
+
+            <h3 class="h5 fw-bold">
+                Expenses by category
+            </h3>
+
+            {% if category_rows %}
+
+                {% for c in category_rows %}
+
+                <div class="category-line">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>{{ c.name }}</span>
+
+                        <strong>
+                            {{ c.total|inr }}
+                        </strong>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-bar"
+                            style="width: {{ [((c.total / (expense if expense else 1)) * 100), 100]|min }}%"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state">
+                    Expense categories will appear after you record expenses.
+                </div>
+
+            {% endif %}
+
+            <hr>
+
+            <div class="d-flex justify-content-between">
+
+                <span>Overall budget for month</span>
+
+                <strong>
+                    {{ overall_budget|inr }}
+                </strong>
+
+            </div>
+
+            {% if overall_budget %}
+
+            <div class="progress mt-2">
+
+                <div
+                    class="progress-bar {{ 'bg-danger' if expense > overall_budget else '' }}"
+                    style="width: {{ [((expense / overall_budget) * 100), 100]|min }}%"
+                ></div>
+
+            </div>
+
+            <small class="text-muted">
+                {{ ((expense / overall_budget) * 100)|round(1) }}% used
+            </small>
+
+            {% else %}
+
+            <small class="text-muted">
+                Set a budget to track spending against a limit.
+            </small>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

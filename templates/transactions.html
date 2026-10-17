@@ -1,0 +1,204 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Transactions | kharcha Book
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+    <div>
+        <div class="eyebrow">LEDGER</div>
+
+        <h1 class="h2 fw-bold">
+            Transactions
+        </h1>
+    </div>
+
+    <a
+        class="btn btn-primary"
+        href="{{ url_for('add_transaction') }}"
+    >
+        + Add transaction
+    </a>
+
+</div>
+
+<form
+    class="panel mb-3 row g-2 align-items-end"
+    method="get"
+>
+
+    <div class="col-md-4">
+
+        <label class="form-label">
+            Type
+        </label>
+
+        <select class="form-select" name="kind">
+
+            <option value="">
+                All types
+            </option>
+
+            <option
+                {{ 'selected' if kind == 'Income' }}
+                value="Income"
+            >
+                Income
+            </option>
+
+            <option
+                {{ 'selected' if kind == 'Expense' }}
+                value="Expense"
+            >
+                Expense
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <label class="form-label">
+            Month
+        </label>
+
+        <input
+            class="form-control"
+            type="month"
+            name="month"
+            value="{{ month }}"
+        >
+
+    </div>
+
+    <div class="col-md-4 d-flex gap-2">
+
+        <button class="btn btn-outline-primary">
+            Filter
+        </button>
+
+        <a
+            class="btn btn-outline-secondary"
+            href="{{ url_for('transactions') }}"
+        >
+            Clear
+        </a>
+
+    </div>
+
+</form>
+
+<div class="panel">
+
+    <div class="table-responsive">
+
+        <table class="table align-middle">
+
+            <thead>
+
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th class="text-end">Amount</th>
+                    <th>Actions</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for t in rows %}
+
+                <tr>
+
+                    <td>
+                        {{ t.transaction_date }}
+                    </td>
+
+                    <td>
+                        {{ t.category_name }}
+                    </td>
+
+                    <td>
+
+                        <span class="badge {{ 'text-bg-success' if t.kind == 'Income' else 'text-bg-danger' }}">
+                            {{ t.kind }}
+                        </span>
+
+                    </td>
+
+                    <td>
+                        {{ t.description }}
+                    </td>
+
+                    <td class="text-end fw-semibold">
+                        {{ t.amount_paise|inr }}
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex gap-1">
+
+                            <a
+                                class="btn btn-sm btn-outline-primary"
+                                href="{{ url_for('edit_transaction', tx_id=t.id) }}"
+                            >
+                                Edit
+                            </a>
+
+                            <form
+                                method="post"
+                                action="{{ url_for('delete_transaction', tx_id=t.id) }}"
+                                onsubmit="return confirm('Delete this transaction?')"
+                            >
+
+                                <button class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="text-center text-muted py-5"
+                    >
+                        No transactions match this filter.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <a
+        class="btn btn-outline-secondary btn-sm"
+        href="{{ url_for('export_csv') }}"
+    >
+        Export all transactions as CSV
+    </a>
+
+</div>
+
+{% endblock %}

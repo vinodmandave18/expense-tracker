@@ -1,0 +1,89 @@
+
+{% extends "base.html" %}
+
+{% block title %}Edit Budget | Kharcha Book{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="panel">
+
+            <h1 class="h3 fw-bold mb-4">Edit Budget</h1>
+
+            <form method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Budget amount (₹)</label>
+                    <input
+                        class="form-control"
+                        type="number"
+                        name="amount"
+                        min="0.01"
+                        step="0.01"
+                        value="{{ '%.2f'|format(budget.amount_paise / 100) }}"
+                        required
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" name="category_id">
+                        <option value="">Overall expense budget</option>
+
+                        {% for c in categories %}
+                        <option
+                            value="{{ c.id }}"
+                            {{ 'selected' if budget.category_id == c.id else '' }}
+                        >
+                            {{ c.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label">Month</label>
+                        <select class="form-select" name="month">
+                            {% for m in range(1, 13) %}
+                            <option
+                                value="{{ m }}"
+                                {{ 'selected' if budget.month == m else '' }}
+                            >
+                                {{ m }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-6 mb-3">
+                        <label class="form-label">Year</label>
+                        <input
+                            class="form-control"
+                            type="number"
+                            name="year"
+                            min="2000"
+                            max="2100"
+                            value="{{ budget.year }}"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Save Changes
+                </button>
+
+                <a href="{{ url_for('budgets') }}"
+                   class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

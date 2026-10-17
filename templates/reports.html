@@ -1,0 +1,118 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Reports | Kharcha Book
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+
+    <div>
+        <div class="eyebrow">INSIGHTS</div>
+
+        <h1 class="h2 fw-bold">
+            Monthly reports
+        </h1>
+    </div>
+
+    <a
+        class="btn btn-outline-primary"
+        href="{{ url_for('export_csv') }}"
+    >
+        Export CSV
+    </a>
+
+</div>
+
+<form
+    method="get"
+    class="panel mb-3 d-flex gap-2 align-items-end"
+>
+
+    <div>
+
+        <label class="form-label">
+            Month
+        </label>
+
+        <input
+            class="form-control"
+            type="month"
+            name="month"
+            value="{{ month }}"
+        >
+
+    </div>
+
+    <button class="btn btn-primary">
+        Generate report
+    </button>
+
+</form>
+
+<div class="panel">
+
+    <h3 class="h5 fw-bold">
+        Category summary for {{ month }}
+    </h3>
+
+    <div class="table-responsive">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Transactions</th>
+                    <th class="text-end">Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for r in rows %}
+                <tr>
+
+                    <td>
+                        {{ r.kind }}
+                    </td>
+
+                    <td>
+                        {{ r.category_name }}
+                    </td>
+
+                    <td>
+                        {{ r.count }}
+                    </td>
+
+                    <td class="text-end">
+                        {{ r.total|inr }}
+                    </td>
+
+                </tr>
+
+                {% else %}
+                <tr>
+
+                    <td
+                        colspan="4"
+                        class="text-muted text-center py-4"
+                    >
+                        No records for this month.
+                    </td>
+
+                </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

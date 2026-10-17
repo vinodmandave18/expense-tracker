@@ -1,0 +1,165 @@
+
+{% extends "base.html" %}
+
+{% block title %}Budgets | Kharcha Book{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <div class="eyebrow">PLAN AHEAD</div>
+    <h1 class="h2 fw-bold">Monthly budgets</h1>
+    <p class="text-muted">
+        Create an overall spending limit or a category-specific limit.
+    </p>
+</div>
+
+<div class="row g-3">
+
+    <!-- Set Budget -->
+    <div class="col-lg-5">
+        <div class="panel">
+
+            <h3 class="h5 fw-bold">Set a budget</h3>
+
+            <form method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Budget amount (₹)</label>
+                    <input
+                        class="form-control"
+                        name="amount"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        required
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Category (optional)</label>
+                    <select class="form-select" name="category_id">
+                        <option value="">Overall expense budget</option>
+                        {% for c in categories %}
+                        <option value="{{ c.id }}">{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label">Month</label>
+                        <select class="form-select" name="month">
+                            {% for m in range(1, 13) %}
+                            <option
+                                value="{{ m }}"
+                                {{ 'selected' if m == now.month else '' }}
+                            >
+                                {{ m }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-6 mb-3">
+                        <label class="form-label">Year</label>
+                        <input
+                            class="form-control"
+                            name="year"
+                            type="number"
+                            min="2000"
+                            max="2100"
+                            value="{{ now.year }}"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Save budget
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Saved Budgets -->
+    <div class="col-lg-7">
+        <div class="panel">
+
+            <h3 class="h5 fw-bold">Saved budgets</h3>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Category</th>
+                            <th class="text-end">Limit</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for b in rows %}
+                        <tr>
+
+                            <td>
+                                {{ '%02d'|format(b.month) }}/{{ b.year }}
+                            </td>
+
+                            <td>
+                                {{ b.category_name or 'Overall' }}
+                            </td>
+
+                            <td class="text-end">
+                                {{ b.amount_paise|inr }}
+                            </td>
+
+                            <!-- Edit and Delete Buttons -->
+                            <td>
+                                <div class="d-flex justify-content-center align-items-center gap-2">
+
+                                    <a
+                                        href="{{ url_for('edit_budget', budget_id=b.id) }}"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+                                        Edit
+                                    </a>
+
+                                    <form
+                                        method="post"
+                                        action="{{ url_for('delete_budget', budget_id=b.id) }}"
+                                        onsubmit="return confirm('Are you sure you want to delete this budget?');"
+                                    >
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                        >
+                                            Delete
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-muted text-center">
+                                No budgets created yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

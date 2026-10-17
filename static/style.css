@@ -1,0 +1,33 @@
+:root { --ink:#182230; --muted:#687586; --primary:#4f46e5; --border:#e6eaf0; --wash:#f6f8fc; }
+body { background:var(--wash); color:var(--ink); min-height:100vh; }
+.app-nav { background:#172033; }
+.navbar-brand { letter-spacing:-.03em; }
+.hero { background:linear-gradient(135deg,#ffffff 0%,#eef2ff 100%); border:1px solid #e4e8f5; }
+.eyebrow { font-size:.72rem; letter-spacing:.14em; font-weight:800; color:#6366f1; }
+.preview-card,.metric-card,.panel,.feature-card,.form-card { background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 24px rgba(21,32,56,.04); }
+.preview-card { padding:26px; }
+.mini-stat { background:#f8fafc; border:1px solid var(--border); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:4px; }
+.mini-stat span,.metric-card span { color:var(--muted); font-size:.86rem; }
+.mini-stat strong { font-size:1.05rem; }
+.feature-card { padding:22px; height:100%; }
+.feature-card p { color:var(--muted); margin-bottom:0; }
+.metric-card { padding:22px; height:100%; }
+.metric-value { font-size:1.75rem; font-weight:800; letter-spacing:-.04em; margin:.35rem 0; }
+.metric-card small { color:var(--muted); }
+.panel { padding:22px; }
+.auth-wrap { max-width:540px; margin:28px auto; }
+.form-card { padding:28px; }
+.form-card.wide { max-width:640px; }
+.form-control,.form-select { border-color:#dce2ec; padding:.68rem .8rem; }
+.form-control:focus,.form-select:focus { border-color:#818cf8; box-shadow:0 0 0 .2rem rgba(99,102,241,.12); }
+.btn-primary { background:var(--primary); border-color:var(--primary); }
+.btn-primary:hover { background:#4338ca; border-color:#4338ca; }
+.table { --bs-table-bg:transparent; margin-bottom:0; }
+.table thead th { color:var(--muted); font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; border-bottom-color:var(--border); }
+.table td,.table th { padding:.85rem .65rem; }
+.empty-state { text-align:center; color:var(--muted); padding:32px 12px; }
+.category-line { margin:16px 0; font-size:.92rem; }
+.progress { height:8px; border-radius:999px; background:#edf0f6; }
+.progress-bar { background:#6366f1; border-radius:999px; }
+footer { margin-top:24px; }
+@media (max-width: 576px) { .panel,.form-card { padding:18px; } .metric-value { font-size:1.4rem; } }
